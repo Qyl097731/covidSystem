@@ -11,7 +11,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
  * @author 邱依良
  */
 public class TimeUtils {
-    public static String format(Long timestamp,String pattern){
+    public static String format(Long timestamp, String pattern) {
         return FastDateFormat.getInstance(pattern).format(timestamp);
     }
 }

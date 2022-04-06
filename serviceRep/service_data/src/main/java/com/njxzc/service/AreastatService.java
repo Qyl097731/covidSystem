@@ -3,9 +3,11 @@ package com.njxzc.service;
 import com.njxzc.entity.Areastat;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author qiuyiliang
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface AreastatService extends IService<Areastat> {
 
+    List<Areastat> getTodayData();
 }

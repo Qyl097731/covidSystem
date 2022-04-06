@@ -3,9 +3,9 @@ package com.njxzc;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(scanBasePackages={"com.njxzc"})
+
+@SpringBootApplication(scanBasePackages = {"com.njxzc"})
 @MapperScan("com.njxzc.mapper")
 public class DatasourceApplication {
 
