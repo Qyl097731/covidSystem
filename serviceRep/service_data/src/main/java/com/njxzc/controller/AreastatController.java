@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.njxzc.commonutils.R;
 import com.njxzc.entity.Areastat;
+import com.njxzc.entity.vo.DailyDataVo;
+import com.njxzc.entity.vo.MapVo;
 import com.njxzc.service.AreastatService;
 import com.njxzc.utils.HttpUtils;
 import io.swagger.annotations.Api;
@@ -18,6 +20,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,18 +33,20 @@ import java.util.regex.Pattern;
  * @since 2022-04-05
  */
 @Api
-@CrossOrigin
 @EnableScheduling
 @RestController
 @RequestMapping("/datasource/areastat")
 public class AreastatController {
+
 
     @Autowired
     private AreastatService areastatService;
 
     @ApiOperation(value = "每天疫情获取")
     @Scheduled(cron = "0 0 6 * * ? ")
-    public void getDataController() {
+//    @GetMapping("updateData")
+    public void updateData(){
+
         //1.获取疫情页面
         String html = HttpUtils.getHtml("https://ncov.dxy.cn/ncovh5/view/pneumonia");
 
@@ -63,6 +68,13 @@ public class AreastatController {
             List<Areastat> provinces = JSON.parseArray(str, Areastat.class);
 
             for (Areastat province : provinces) {
+                //更新新增的数据
+                Areastat oldData = areastatService.getById(province.getLocationId());
+                if(oldData != null){
+                    province.setAddConfirmedCount(province.getConfirmedCount()-oldData.getConfirmedCount());
+                    province.setAddCuredCount(province.getCuredCount()-oldData.getCuredCount());
+                    province.setAddDeadCount(province.getDeadCount()-oldData.getDeadCount());
+                }
                 //设置城市的统计数据集
                 String statisticsDataUrl = province.getStatisticsData();
                 String statisticsData = HttpUtils.getHtml(statisticsDataUrl);
@@ -91,11 +103,26 @@ public class AreastatController {
     * @Date: 2022/4/6
     */
     @ApiOperation(value = "疫情数据获取")
-    @GetMapping("getTodayData")
-    public R getTodayData(){
-        List<Areastat> todayData = areastatService.getTodayData();
-        return R.ok().data("todayData",todayData);
+    @GetMapping("getMapData")
+    public R getMapData(){
+        List<MapVo> mapData = areastatService.getMapData();
+        return R.ok().data("mapData",mapData);
     }
+
+    /**
+     * @Description:  获取头部数据
+     * @Param:
+     * @return: R
+     * @Author: Mr.Qiu
+     * @Date: 2022/4/6
+     */
+    @ApiOperation(value = "获取头部数据")
+    @GetMapping("getHeaderDigit")
+    public R getHeaderDigit(){
+        List<Integer> digitalFlopData = areastatService.getHeaderDigit();
+        return R.ok().data("digitalFlopData",digitalFlopData);
+    }
+
     /**
     * @Description: 获取某地区市区的疫情数据
     * @Param:  provinceName
@@ -103,24 +130,14 @@ public class AreastatController {
     * @Author: Mr.Qiu
     * @Date: 2022/4/6
     */
-    @ApiOperation(value = "疫情数据获取")
-    @GetMapping("getCitiesDataByPName/{provinceName}")
-    public R getCitiesDataByPName(@PathVariable String provinceName){
-        return null;
+    @ApiOperation(value = "获取某地区市区的疫情数据")
+    @GetMapping("getDataByPName/{provinceName}")
+    public R getDataByPName(@PathVariable String provinceName){
+        provinceName = provinceName == null ?"江苏省":provinceName;
+        List<DailyDataVo> statisticData = areastatService.getDataByPName(provinceName);
+        return R.ok().data("statisticData",statisticData).data("provinceName",provinceName);
     }
 
-    /**
-     * @Description: 获取某地近两年疫情走势并进行预测
-     * @Param: provinceName
-     * @return: R
-     * @Author: Mr.Qiu
-     * @Date: 2022/4/6
-     */
-     @ApiOperation(value = "获取某地近两年疫情走势并进行预测")
-     @GetMapping("predictCovid/{provinceName}")
-     public R predictCovid(@PathVariable String provinceName){
-        return null;
-     }
 
 }
 

@@ -2,6 +2,8 @@ package com.njxzc.service;
 
 import com.njxzc.entity.Areastat;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.njxzc.entity.vo.DailyDataVo;
+import com.njxzc.entity.vo.MapVo;
 
 import java.util.List;
 
@@ -15,5 +17,8 @@ import java.util.List;
  */
 public interface AreastatService extends IService<Areastat> {
 
-    List<Areastat> getTodayData();
+    List<MapVo> getMapData();
+    List<Integer> getHeaderDigit();
+
+    List<DailyDataVo> getDataByPName(String provinceName);
 }

@@ -49,6 +49,10 @@ public class Areastat implements Serializable {
     @TableField("confirmedCount")
     private Integer confirmedCount;
 
+    @ApiModelProperty(value = "新增确诊")
+    @TableField("addConfirmedCount")
+    private Integer addConfirmedCount;
+
     @ApiModelProperty(value = "疑似确诊数目")
     @TableField("suspectedCount")
     private Integer suspectedCount;
@@ -57,9 +61,17 @@ public class Areastat implements Serializable {
     @TableField("curedCount")
     private Integer curedCount;
 
+    @ApiModelProperty(value = "新增治愈")
+    @TableField("addCuredCount")
+    private Integer addCuredCount;
+
     @ApiModelProperty(value = "死亡数")
     @TableField("deadCount")
     private Integer deadCount;
+
+    @ApiModelProperty(value = "新增死亡数")
+    @TableField("addDeadCount")
+    private Integer addDeadCount;
 
     @ApiModelProperty(value = "高风险区域数")
     @TableField("highDangerCount")
