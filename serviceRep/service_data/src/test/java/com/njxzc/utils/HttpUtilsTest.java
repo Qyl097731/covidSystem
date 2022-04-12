@@ -3,18 +3,21 @@ package com.njxzc.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.njxzc.entity.Areastat;
+import com.njxzc.entity.News;
 import com.njxzc.service.AreastatService;
 import org.json.JSONArray;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,5 +87,36 @@ public class HttpUtilsTest {
 
 //          List<Areastat> citys= JSON.parseArray(dataStr,Areastat.class);
         }
+    }
+
+    @Test
+    public void getNews() {
+
+        List<News>news = new ArrayList<>();
+        Integer pn = 0;
+        String url =  "https://www.baidu.com/s?rtt=1&bsst=1&cl=2&tn=news&ie=utf-8&word=%E7%96%AB%E6%83%85&x_bfe_rqs=03E80&x_bfe_tjscore=0.100000&tngroupname=organic_news&newVideo=12&goods_entry_switch=1&rsv_dl=news_b_pn&pn={0}";
+        while(pn < 50){
+            //1.获取疫情页面
+            url = url.replace("{0}",pn.toString());
+            String html = HttpUtils.getHtml(url);
+            assert html != null;
+
+            //2.jsoup获取getAreaStat标签中的全国疫情数据
+            Document parse = Jsoup.parse(html);
+            Elements title_elements = parse.select(".news-title-font_1xS-F");
+            Elements time_elements = parse.select(".c-color-gray2.c-font-normal.c-gap-right-xsmall");
+            Elements source_elements = parse.select(".c-color-gray");
+            for(int i = 0 ; i < title_elements.size(); i++) {
+                news.add(new News(title_elements.get(i).attr("aria-label").substring(2),
+                                  time_elements.get(i).attr("aria-label").substring(3),
+                                  source_elements.get(i).attr("aria-label").substring(4))
+                        );
+            }
+            pn += 10;
+            url =  "https://www.baidu.com/s?rtt=1&bsst=1&cl=2&tn=news&ie=utf-8&word=%E7%96%AB%E6%83%85&x_bfe_rqs=03E80&x_bfe_tjscore=0.100000&tngroupname=organic_news&newVideo=12&goods_entry_switch=1&rsv_dl=news_b_pn&pn={0}";
+
+        }
+
+        System.out.println(news.toString());
     }
 }

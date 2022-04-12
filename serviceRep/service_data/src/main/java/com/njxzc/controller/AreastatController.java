@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 /**
  * <p>
- * 前端控制器
+ * 各区域疫情状态控制
  * </p>
  *
  * @author qiuyiliang
@@ -174,6 +174,7 @@ public class AreastatController {
         List<DetectOrg> detectOrgs = areastatService.getDetectOrgByLocation(location);
         return R.ok().data("detectOrgs", detectOrgs).data("location", location);
     }
+
 
 
 }
