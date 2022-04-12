@@ -8,6 +8,7 @@ package com.njxzc.entity.vo;
  *
  * @author 邱依良
  */
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +28,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MapVo {
-    @ApiModelProperty(value = "省份名称")
+    @ApiModelProperty(value = "城市/省份名称")
     private String name;
 
     @ApiModelProperty(value = "当前感染人数")
